@@ -98,6 +98,25 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
+        // Show loading spinner while AuthProvider is initializing
+        if (authProvider.isLoading) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Initializing app...'),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Show main content based on auth state
         if (authProvider.isLoggedIn) {
           return PlatformUtils.isWeb
               ? const WebDashboard()

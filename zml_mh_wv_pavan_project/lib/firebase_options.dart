@@ -41,50 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR_WEB_API_KEY',
-    appId: 'YOUR_WEB_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
-    measurementId: 'YOUR_MEASUREMENT_ID',
+    apiKey: 'AIzaSyA0jX1_IOJw16mrACOqEFLj2iJTnUhGNVQ',
+    appId: '1:1085692339779:web:61361b5ff1c15d74b1d6f6',
+    messagingSenderId: '1085692339779',
+    projectId: 'zmlpavan',
+    authDomain: 'zmlpavan.firebaseapp.com',
+    storageBucket: 'zmlpavan.firebasestorage.app',
+    measurementId: 'G-T734JQKHM9',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
+    apiKey: 'AIzaSyB-VoGtHO2qxSKWG3_Q5lCr1FFMxOr7VK4',
+    appId: '1:1085692339779:android:5ddd2af39dd9cbceb1d6f6',
+    messagingSenderId: '1085692339779',
+    projectId: 'zmlpavan',
+    storageBucket: 'zmlpavan.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
+    apiKey: 'AIzaSyCIOFXbyFjCapqbMjLr2bBxyntkmavUWXk',
+    appId: '1:1085692339779:ios:868e386bc5ae1a61b1d6f6',
+    messagingSenderId: '1085692339779',
+    projectId: 'zmlpavan',
+    storageBucket: 'zmlpavan.firebasestorage.app',
     iosBundleId: 'com.example.zmlMhWvPavanProject',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'YOUR_MACOS_API_KEY',
-    appId: 'YOUR_MACOS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
+    apiKey: 'AIzaSyCIOFXbyFjCapqbMjLr2bBxyntkmavUWXk',
+    appId: '1:1085692339779:ios:868e386bc5ae1a61b1d6f6',
+    messagingSenderId: '1085692339779',
+    projectId: 'zmlpavan',
+    storageBucket: 'zmlpavan.firebasestorage.app',
     iosBundleId: 'com.example.zmlMhWvPavanProject',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'YOUR_WINDOWS_API_KEY',
-    appId: 'YOUR_WINDOWS_APP_ID',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
+    apiKey: 'AIzaSyA0jX1_IOJw16mrACOqEFLj2iJTnUhGNVQ',
+    appId: '1:1085692339779:web:61361b5ff1c15d74b1d6f6',
+    messagingSenderId: '1085692339779',
+    projectId: 'zmlpavan',
+    authDomain: 'zmlpavan.firebaseapp.com',
+    storageBucket: 'zmlpavan.firebasestorage.app',
+    measurementId: 'G-T734JQKHM9',
   );
+
 }
