@@ -75,8 +75,28 @@ class MedicationProvider with ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _firestoreService.createMedication(medication);
-      _medications.add(medication);
+      String id = await _firestoreService.createMedication(medication);
+
+      // Create the medication with the generated ID
+      final medicationWithId = MedicationModel(
+        id: id,
+        userId: medication.userId,
+        patientId: medication.patientId,
+        medicationName: medication.medicationName,
+        dosage: medication.dosage,
+        frequency: medication.frequency,
+        timings: medication.timings,
+        startDate: medication.startDate,
+        endDate: medication.endDate,
+        instructions: medication.instructions,
+        prescribedBy: medication.prescribedBy,
+        isActive: medication.isActive,
+        reminderEnabled: medication.reminderEnabled,
+        createdAt: medication.createdAt,
+        updatedAt: medication.updatedAt,
+      );
+
+      _medications.add(medicationWithId);
 
       // Add to active medications if it's currently active
       if (medication.isActive &&

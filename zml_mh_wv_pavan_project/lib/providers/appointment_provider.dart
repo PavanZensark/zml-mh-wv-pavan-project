@@ -57,12 +57,32 @@ class AppointmentProvider with ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _firestoreService.createAppointment(appointment);
-      _appointments.add(appointment);
+      String id = await _firestoreService.createAppointment(appointment);
+
+      // Create the appointment with the generated ID
+      final appointmentWithId = AppointmentModel(
+        id: id,
+        userId: appointment.userId,
+        patientId: appointment.patientId,
+        doctorName: appointment.doctorName,
+        doctorSpecialization: appointment.doctorSpecialization,
+        appointmentDate: appointment.appointmentDate,
+        appointmentTime: appointment.appointmentTime,
+        reason: appointment.reason,
+        notes: appointment.notes,
+        status: appointment.status,
+        location: appointment.location,
+        contactNumber: appointment.contactNumber,
+        reminderSet: appointment.reminderSet,
+        createdAt: appointment.createdAt,
+        updatedAt: appointment.updatedAt,
+      );
+
+      _appointments.add(appointmentWithId);
 
       // Add to upcoming if it's in the future
-      if (appointment.appointmentDateTime.isAfter(DateTime.now())) {
-        _upcomingAppointments.add(appointment);
+      if (appointmentWithId.appointmentDateTime.isAfter(DateTime.now())) {
+        _upcomingAppointments.add(appointmentWithId);
         _upcomingAppointments.sort(
             (a, b) => a.appointmentDateTime.compareTo(b.appointmentDateTime));
       }
