@@ -4,7 +4,11 @@ import '../../providers/auth_provider.dart';
 import '../../providers/appointment_provider.dart';
 import '../../providers/medication_provider.dart';
 import '../../models/appointment_model.dart';
-import '../../utils/date_utils.dart' as AppDateUtils;
+import '../../utils/date_utils.dart' as app_date_utils;
+import 'health/health_info_screen.dart';
+import 'appointments/appointments_screen.dart';
+import 'medications/medications_screen.dart';
+import 'profile/profile_screen.dart';
 
 class MobileDashboard extends StatefulWidget {
   const MobileDashboard({super.key});
@@ -16,26 +20,28 @@ class MobileDashboard extends StatefulWidget {
 class _MobileDashboardState extends State<MobileDashboard> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const DashboardHome(),
-    const HealthInfoScreen(),
-    const AppointmentsScreen(),
-    const MedicationsScreen(),
-    const ProfileScreen(),
-  ];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final screens = [
+      DashboardHome(onNavigateToTab: _onItemTapped),
+      const HealthInfoScreen(),
+      const AppointmentsScreen(),
+      const MedicationsScreen(),
+      const ProfileScreen(),
+    ];
+
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
@@ -63,8 +69,32 @@ class _MobileDashboardState extends State<MobileDashboard> {
   }
 }
 
-class DashboardHome extends StatelessWidget {
-  const DashboardHome({super.key});
+class DashboardHome extends StatefulWidget {
+  final Function(int) onNavigateToTab;
+
+  const DashboardHome({super.key, required this.onNavigateToTab});
+
+  @override
+  State<DashboardHome> createState() => _DashboardHomeState();
+}
+
+class _DashboardHomeState extends State<DashboardHome> {
+  @override
+  void initState() {
+    super.initState();
+    // Load data when dashboard initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthProvider>();
+      if (authProvider.user != null) {
+        context
+            .read<AppointmentProvider>()
+            .loadUpcomingAppointments(authProvider.user!.id);
+        context
+            .read<MedicationProvider>()
+            .loadMedications(authProvider.user!.id);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +209,12 @@ class DashboardHome extends StatelessWidget {
                         title: 'Add Health Info',
                         color: Colors.green,
                         onTap: () {
-                          Navigator.of(context).pushNamed('/add-health-info');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HealthInfoScreen(),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -190,7 +225,12 @@ class DashboardHome extends StatelessWidget {
                         title: 'Book Appointment',
                         color: Colors.blue,
                         onTap: () {
-                          Navigator.of(context).pushNamed('/book-appointment');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AppointmentsScreen(),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -205,7 +245,12 @@ class DashboardHome extends StatelessWidget {
                         title: 'Add Medication',
                         color: Colors.orange,
                         onTap: () {
-                          Navigator.of(context).pushNamed('/add-medication');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MedicationsScreen(),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -257,7 +302,7 @@ class DashboardHome extends StatelessWidget {
                                 ),
                                 title: Text(appointment.doctorName),
                                 subtitle: Text(
-                                  '${AppDateUtils.DateUtils.formatDate(appointment.appointmentDate)} at ${appointment.appointmentTime}',
+                                  '${app_date_utils.DateUtils.formatDate(appointment.appointmentDate)} at ${appointment.appointmentTime}',
                                 ),
                                 trailing: Text(
                                   appointment.status.toString().split('.').last,
@@ -274,7 +319,8 @@ class DashboardHome extends StatelessWidget {
                       if (appointmentProvider.upcomingAppointments.length > 3)
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/appointments');
+                            widget.onNavigateToTab(
+                                2); // Navigate to appointments tab
                           },
                           child: const Text('View All'),
                         ),
@@ -327,7 +373,8 @@ class DashboardHome extends StatelessWidget {
                       if (medicationProvider.todaysMedications.length > 3)
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/medications');
+                            widget.onNavigateToTab(
+                                3); // Navigate to medications tab
                           },
                           child: const Text('View All'),
                         ),
@@ -418,263 +465,6 @@ class _QuickActionCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Placeholder screens for other tabs
-class HealthInfoScreen extends StatelessWidget {
-  const HealthInfoScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Health Information'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text('Health Information - Coming Soon'),
-      ),
-    );
-  }
-}
-
-class AppointmentsScreen extends StatelessWidget {
-  const AppointmentsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Appointments'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text('Appointments - Coming Soon'),
-      ),
-    );
-  }
-}
-
-class MedicationsScreen extends StatelessWidget {
-  const MedicationsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Medications'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Text('Medications - Coming Soon'),
-      ),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-      ),
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          final user = authProvider.user;
-          if (user == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              // Profile Header
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      child: Text(
-                        '${user.firstName[0]}${user.lastName[0]}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${user.firstName} ${user.lastName}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          Text(
-                            user.email,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
-                          ),
-                          if (user.phoneNumber != null)
-                            Text(
-                              user.phoneNumber!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Profile Options
-              _ProfileOption(
-                icon: Icons.edit,
-                title: 'Edit Profile',
-                onTap: () {
-                  // TODO: Navigate to edit profile
-                },
-              ),
-              _ProfileOption(
-                icon: Icons.security,
-                title: 'Change Password',
-                onTap: () {
-                  // TODO: Navigate to change password
-                },
-              ),
-              _ProfileOption(
-                icon: Icons.notifications,
-                title: 'Notification Settings',
-                onTap: () {
-                  // TODO: Navigate to notification settings
-                },
-              ),
-              _ProfileOption(
-                icon: Icons.help,
-                title: 'Help & Support',
-                onTap: () {
-                  // TODO: Navigate to help
-                },
-              ),
-              _ProfileOption(
-                icon: Icons.privacy_tip,
-                title: 'Privacy Policy',
-                onTap: () {
-                  // TODO: Navigate to privacy policy
-                },
-              ),
-              const SizedBox(height: 24),
-
-              // Logout Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _showLogoutDialog(context, authProvider);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context, AuthProvider authProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await authProvider.signOut();
-              if (context.mounted) {
-                Navigator.of(context).pushReplacementNamed('/login');
-              }
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileOption extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-
-  const _ProfileOption({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Theme.of(context).primaryColor),
-      title: Text(title),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: onTap,
     );
   }
 }

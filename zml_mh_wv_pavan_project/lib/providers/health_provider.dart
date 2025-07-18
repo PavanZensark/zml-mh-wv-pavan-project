@@ -55,8 +55,28 @@ class HealthProvider with ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      await _firestoreService.createHealthInfo(healthInfo);
-      _healthProfiles.add(healthInfo);
+      String id = await _firestoreService.createHealthInfo(healthInfo);
+
+      // Create the health info with the generated ID
+      final healthInfoWithId = HealthInfoModel(
+        id: id,
+        userId: healthInfo.userId,
+        firstName: healthInfo.firstName,
+        lastName: healthInfo.lastName,
+        dateOfBirth: healthInfo.dateOfBirth,
+        gender: healthInfo.gender,
+        bloodGroup: healthInfo.bloodGroup,
+        height: healthInfo.height,
+        weight: healthInfo.weight,
+        allergies: healthInfo.allergies,
+        medicalConditions: healthInfo.medicalConditions,
+        emergencyContact: healthInfo.emergencyContact,
+        emergencyContactPhone: healthInfo.emergencyContactPhone,
+        createdAt: healthInfo.createdAt,
+        updatedAt: healthInfo.updatedAt,
+      );
+
+      _healthProfiles.add(healthInfoWithId);
       _isLoading = false;
       notifyListeners();
       return true;
